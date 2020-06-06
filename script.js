@@ -6,6 +6,8 @@ window.onload = function(){
     var ctx;
     var delay = 100;
     var theSnake;
+    var directionSnake;
+    var theFood;
 
     init();
 
@@ -16,15 +18,17 @@ window.onload = function(){
         canvas.style.border = '2px solid';
         document.body.appendChild(canvas);
         ctx = canvas.getContext('2d');
-        theSnake = new snake([[6,4],[5,4],[4,4]]);
-        movementSnake();
+        theSnake = new snake([[6,4],[5,4],[4,4]], 'right');
+        theFood = new food([10,10]);
+        movementCanvas();
     }
 
-    function movementSnake() {
+    function movementCanvas() {
         ctx.clearRect(0,0,canvasWidth, canvasHeight);
         theSnake.advance();
         theSnake.draw();
-        setTimeout(movementSnake, delay);
+        theFood.draw();
+        setTimeout(movementCanvas, delay);
     }
 
     function drawBlockSnake(ctx, position){
@@ -33,8 +37,9 @@ window.onload = function(){
         ctx.fillRect(x,y,blockSnake, blockSnake);
     }
 
-    function snake(body){
+    function snake(body, direction){
         this.body = body;
+        this.direction = direction;
         this.draw = function () {
             ctx.save();
             ctx.fillStyle = "#4F6742";
@@ -45,9 +50,77 @@ window.onload = function(){
         };
         this.advance = function () {
             let nextPosition = this.body[0].slice();
-            nextPosition[0]++;
+            switch (this.direction) {
+                case "left":
+                    nextPosition[0]--;
+                    break;
+                case "right":
+                    nextPosition[0]++;
+                    break;
+                case "down":
+                    nextPosition[1]++;
+                    break;
+                case "up":
+                    nextPosition[1]--;
+                    break;
+                default :
+                    throw("La direction n'est pas valide");
+            }
             this.body.unshift(nextPosition);
             this.body.pop();
+        };
+        this.setDirection = function(directionSnake){
+            let directionValide;
+            switch (this.direction) {
+                case "left":
+                case "right":
+                    directionValide = ["up", "down"];
+                    break;
+                case "down":
+                case "up":
+                    directionValide = ["left", "right"];
+                    break;
+                default :
+                    return;
+            }
+            if(directionValide.indexOf(directionSnake)> -1){
+                this.direction = directionSnake;
+            }
         }
+    }
+
+    function food(position){
+        this.position = position;
+        this.draw = function () {
+            ctx.save();
+            ctx.fillStyle = "#a61717";
+            ctx.beginPath();
+            let cercle = blockSnake/2;
+            let x = position[0]*blockSnake + cercle;
+            let y = position[1]*blockSnake + cercle;
+            ctx.arc(x,y,cercle,0, Math.PI*2,true);
+            ctx.fill();
+            ctx.restore();
+        }
+
+    }
+
+    document.onkeydown = function toucheUtil(e){
+        let touche = e.key;
+        switch (touche) {
+            case "ArrowUp":
+                directionSnake = "up";
+                break;
+            case "ArrowDown":
+                directionSnake = "down";
+                break;
+            case "ArrowRight":
+                directionSnake = "right";
+                break;
+            case "ArrowLeft":
+                directionSnake = "left";
+                break;
+        }
+        theSnake.setDirection(directionSnake);
     }
 };
