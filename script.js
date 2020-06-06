@@ -30,6 +30,12 @@ window.onload = function(){
         if (theSnake.collision()){
             // game over
         } else {
+            if (theSnake.eatingFood(theFood)){
+                theSnake.ateTheFood = true;
+                do {
+                    theFood.otherFoodPosition();
+                } while (theFood.foodOnSnake(theSnake))
+            }
         ctx.clearRect(0,0,canvasWidth, canvasHeight);
         theSnake.draw();
         theFood.draw();
@@ -46,6 +52,7 @@ window.onload = function(){
     function snake(body, direction){
         this.body = body;
         this.direction = direction;
+        this.ateTheFood = false;
         this.draw = function () {
             ctx.save();
             ctx.fillStyle = "#4F6742";
@@ -73,7 +80,11 @@ window.onload = function(){
                     throw("La direction n'est pas valide");
             }
             this.body.unshift(nextPosition);
-            this.body.pop();
+            if (!this.ateTheFood){
+                this.body.pop();
+            } else {
+                this.ateTheFood = false;
+            }
         };
         this.setDirection = function(directionSnake){
             let directionValide;
@@ -111,14 +122,17 @@ window.onload = function(){
                 collisionMur = true;
             }
 
-            for (let i=0; i < snakeBody.length ;i++){
+            for (let i = 0; i < snakeBody.length; i++){
                 if (snakeHeadX === snakeBody[i][0] && snakeHeadY === snakeBody[i][1]){
                     collisionSnake = true;
                 }
             }
             return collisionSnake || collisionMur;
         };
-        
+        this.eatingFood = function(theGodDamnFood){
+            let head = this.body[0];
+            return head[0] === theGodDamnFood.position[0] && head[1] === theGodDamnFood.position[1];
+        };
     }
 
     function food(position){
@@ -128,12 +142,26 @@ window.onload = function(){
             ctx.fillStyle = "#a61717";
             ctx.beginPath();
             let cercle = blockSnake/2;
-            let x = position[0]*blockSnake + cercle;
-            let y = position[1]*blockSnake + cercle;
+            let x = this.position[0]*blockSnake + cercle;
+            let y = this.position[1]*blockSnake + cercle;
             ctx.arc(x,y,cercle,0, Math.PI*2,true);
             ctx.fill();
             ctx.restore();
-        }
+        };
+        this.otherFoodPosition = function() {
+            let newX = Math.round(Math.random() * (widthBlockSnake - 1));
+            let newY = Math.round(Math.random() * (heightBlockSnake - 1));
+            this.position = [newX,newY];
+        };
+        this.foodOnSnake = function(checkTheSnake){
+            let foodOnSnake = false;
+            for (let i = 0; i < checkTheSnake.body.length;i++){
+                if(this.position[0] === checkTheSnake.body[i][0] && this.position[1] === checkTheSnake.body[i][1]){
+                    foodOnSnake = true;
+                }
+            }
+            return foodOnSnake;
+        };
 
     }
 
