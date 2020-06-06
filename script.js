@@ -3,6 +3,8 @@ window.onload = function(){
     var canvasWidth = 900;
     var canvasHeight = 600;
     var blockSnake = 30;
+    var widthBlockSnake = canvasWidth/blockSnake;
+    var heightBlockSnake = canvasHeight/blockSnake;
     var ctx;
     var delay = 100;
     var theSnake;
@@ -24,11 +26,15 @@ window.onload = function(){
     }
 
     function movementCanvas() {
-        ctx.clearRect(0,0,canvasWidth, canvasHeight);
         theSnake.advance();
+        if (theSnake.collision()){
+            // game over
+        } else {
+        ctx.clearRect(0,0,canvasWidth, canvasHeight);
         theSnake.draw();
         theFood.draw();
         setTimeout(movementCanvas, delay);
+        }
     }
 
     function drawBlockSnake(ctx, position){
@@ -86,6 +92,31 @@ window.onload = function(){
             if(directionValide.indexOf(directionSnake)> -1){
                 this.direction = directionSnake;
             }
+        };
+        this.collision = function(){
+            var collisionMur = false;
+            var collisionSnake = false;
+            let snakeHead = this.body[0];
+            let snakeBody = this.body.slice(1);
+            let snakeHeadX = snakeHead[0];
+            let snakeHeadY = snakeHead[1];
+            let minX = 0;
+            let minY = 0;
+            let maxX = widthBlockSnake - 1;
+            let maxY = heightBlockSnake - 1;
+            let snakeDansMurLargeur = snakeHeadX < minX || snakeHeadX > maxX;
+            let snakeDansMurHauteur = snakeHeadY < minY || snakeHeadY > maxY;
+
+            if (snakeDansMurHauteur || snakeDansMurLargeur){
+                collisionMur = true;
+            }
+
+            for (let i=0; i < snakeBody.length ;i++){
+                if (snakeHeadX === snakeBody[i][0] && snakeHeadY === snakeBody[0][i]){
+                    collisionSnake = true;
+                }
+            }
+            return collisionSnake || collisionMur;
         }
     }
 
