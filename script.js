@@ -17,7 +17,10 @@ window.onload = function(){
         let canvas = document.createElement('canvas');
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        canvas.style.border = '2px solid';
+        canvas.style.border = '10px solid #95a595';
+        canvas.style.margin = "10px auto";
+        canvas.style.display = "block";
+        canvas.style.backgroundColor = "#bfc9bf";
         document.body.appendChild(canvas);
         ctx = canvas.getContext('2d');
         theSnake = new snake([[6,4],[5,4],[4,4],[3,4],[2,4]], 'right');
@@ -39,17 +42,28 @@ window.onload = function(){
                 } while (theFood.foodOnSnake(theSnake))
             }
         ctx.clearRect(0,0,canvasWidth, canvasHeight);
+        showScore();
         theSnake.draw();
         theFood.draw();
-        scoreFinal();
         setTimeout(movementCanvas, delay);
         }
     }
 
     function gameOver(){
         ctx.save();
-        ctx.fillText("Game Over", 5,15);
-        ctx.fillText("Appuyer la touche 'Enter' pour recommencer une partie", 5, 40);
+        ctx.font = "bold 100px sans-serif";
+        ctx.fillStyle = "#95a595";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = "10px";
+        ctx.fillText("Game Over", canvasWidth/2, 135);
+        ctx.strokeText("Game Over", canvasWidth/2, 135);
+        ctx.font = "bold 32px sans-serif";
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = "10px";
+        ctx.fillText("Appuyez sur 'Enter' pour recommencer une partie", canvasWidth/2, 240);
+        ctx.strokeText("Appuyez sur 'Enter' pour recommencer une partie", canvasWidth/2, 240);
         ctx.restore();
     }
 
@@ -60,9 +74,11 @@ window.onload = function(){
         movementCanvas();
     }
     
-    function scoreFinal() {
+    function showScore() {
         ctx.save();
-        ctx.fillText(score.toString(), 5,canvasHeight - 5);
+        ctx.font = "bold 50px sans-serif";
+        ctx.fillStyle = "#95a595";
+        ctx.fillText(score.toString(), canvasWidth/2,canvasHeight - 15);
         ctx.restore();
     }
 
