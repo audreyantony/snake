@@ -22,15 +22,17 @@ window.onload = function(){
         ctx = canvas.getContext('2d');
         theSnake = new snake([[6,4],[5,4],[4,4],[3,4],[2,4]], 'right');
         theFood = new food([10,10]);
+        score = 0;
         movementCanvas();
     }
 
     function movementCanvas() {
         theSnake.advance();
         if (theSnake.collision()){
-            // game over
+            gameOver();
         } else {
             if (theSnake.eatingFood(theFood)){
+                score ++;
                 theSnake.ateTheFood = true;
                 do {
                     theFood.otherFoodPosition();
@@ -39,8 +41,29 @@ window.onload = function(){
         ctx.clearRect(0,0,canvasWidth, canvasHeight);
         theSnake.draw();
         theFood.draw();
+        scoreFinal();
         setTimeout(movementCanvas, delay);
         }
+    }
+
+    function gameOver(){
+        ctx.save();
+        ctx.fillText("Game Over", 5,15);
+        ctx.fillText("Appuyer la touche 'Enter' pour recommencer une partie", 5, 40);
+        ctx.restore();
+    }
+
+    function resume(){
+        theSnake = new snake([[6,4],[5,4],[4,4],[3,4],[2,4]], 'right');
+        theFood = new food([10,10]);
+        score = 0;
+        movementCanvas();
+    }
+    
+    function scoreFinal() {
+        ctx.save();
+        ctx.fillText(score.toString(), 5,canvasHeight - 5);
+        ctx.restore();
     }
 
     function drawBlockSnake(ctx, position){
@@ -180,6 +203,11 @@ window.onload = function(){
             case "ArrowLeft":
                 directionSnake = "left";
                 break;
+            case "Enter":
+                resume();
+                return;
+            default:
+                return;
         }
         theSnake.setDirection(directionSnake);
     }
