@@ -6,10 +6,12 @@ window.onload = function(){
     var widthBlockSnake = canvasWidth/blockSnake;
     var heightBlockSnake = canvasHeight/blockSnake;
     var ctx;
-    var delay = 100;
+    var delay = 150;
     var theSnake;
     var directionSnake;
     var theFood;
+    var score;
+    var timeOut;
 
     init();
 
@@ -45,14 +47,14 @@ window.onload = function(){
         showScore();
         theSnake.draw();
         theFood.draw();
-        setTimeout(movementCanvas, delay);
+        timeOut = setTimeout(movementCanvas, delay);
         }
     }
 
     function gameOver(){
         ctx.save();
         ctx.font = "bold 100px sans-serif";
-        ctx.fillStyle = "#95a595";
+        ctx.fillStyle = "#4F6742";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.strokeStyle = "white";
@@ -60,6 +62,7 @@ window.onload = function(){
         ctx.fillText("Game Over", canvasWidth/2, 135);
         ctx.strokeText("Game Over", canvasWidth/2, 135);
         ctx.font = "bold 32px sans-serif";
+        ctx.fillStyle = "#95a595";
         ctx.strokeStyle = "white";
         ctx.lineWidth = "10px";
         ctx.fillText("Appuyez sur 'Enter' pour recommencer une partie", canvasWidth/2, 240);
@@ -71,6 +74,7 @@ window.onload = function(){
         theSnake = new snake([[6,4],[5,4],[4,4],[3,4],[2,4]], 'right');
         theFood = new food([10,10]);
         score = 0;
+        clearTimeout(timeOut);
         movementCanvas();
     }
     
