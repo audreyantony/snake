@@ -22,6 +22,7 @@ window.onload = function(){
 
     function movementSnake() {
         ctx.clearRect(0,0,canvasWidth, canvasHeight);
+        theSnake.advance();
         theSnake.draw();
         setTimeout(movementSnake, delay);
     }
@@ -42,5 +43,11 @@ window.onload = function(){
             }
             ctx.restore();
         };
+        this.advance = function () {
+            let nextPosition = this.body[0].slice();
+            nextPosition[0]++;
+            this.body.unshift(nextPosition);
+            this.body.pop();
+        }
     }
 };
