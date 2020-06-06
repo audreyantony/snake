@@ -20,7 +20,7 @@ window.onload = function(){
         canvas.style.border = '2px solid';
         document.body.appendChild(canvas);
         ctx = canvas.getContext('2d');
-        theSnake = new snake([[6,4],[5,4],[4,4]], 'right');
+        theSnake = new snake([[6,4],[5,4],[4,4],[3,4],[2,4]], 'right');
         theFood = new food([10,10]);
         movementCanvas();
     }
@@ -97,9 +97,9 @@ window.onload = function(){
             var collisionMur = false;
             var collisionSnake = false;
             let snakeHead = this.body[0];
-            let snakeBody = this.body.slice(1);
-            let snakeHeadX = snakeHead[0];
-            let snakeHeadY = snakeHead[1];
+            var snakeBody = this.body.slice(1);
+            var snakeHeadX = snakeHead[0];
+            var snakeHeadY = snakeHead[1];
             let minX = 0;
             let minY = 0;
             let maxX = widthBlockSnake - 1;
@@ -112,12 +112,13 @@ window.onload = function(){
             }
 
             for (let i=0; i < snakeBody.length ;i++){
-                if (snakeHeadX === snakeBody[i][0] && snakeHeadY === snakeBody[0][i]){
+                if (snakeHeadX === snakeBody[i][0] && snakeHeadY === snakeBody[i][1]){
                     collisionSnake = true;
                 }
             }
             return collisionSnake || collisionMur;
-        }
+        };
+        
     }
 
     function food(position){
